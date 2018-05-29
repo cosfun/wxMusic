@@ -20,7 +20,9 @@ public class WeChatMessage implements IDatabaseHook {
 
 
     public static WeChatMessage weChatMessage = null;
-    //public boolean isPlayMusic=false;
+
+    public boolean isHanding = false;
+
     public static WeChatMessage instance() {
         if (weChatMessage == null) {
             weChatMessage = new WeChatMessage();
@@ -60,29 +62,43 @@ public class WeChatMessage implements IDatabaseHook {
         return null;
     }
 
+
     @NotNull
     @Override
     public Operation<Long> onDatabaseInserted(Object o, String table, String s1, ContentValues contentValues, int i, Long aLong) {
-         if (table.equals( "message") && contentValues.getAsInteger("isSend") == 0) {
-             String content= contentValues.getAsString("content");
-             if(content.contains("发给我")) {
-                 try {
-                     ShellUtils.execCommand("am instrument -w -r   -e debug false -e class com.cosage.zzh.uitest.WxTest com.cosage.zzh.uitest.test/android.support.test.runner.AndroidJUnitRunner", true);
-                     ;
-                 } catch (Exception e) {
-                     XposedBridge.log("error:" + e.getMessage());
-                 }
-             }
-            /*String content = contentValues.getAsString("content");
-            if(content.contains("#点歌") && !isPlayMusic){
-                String[] strs = content.split("#点歌");
-                if(strs.length>=2){
-                    isPlayMusic = true;
-                    yunMusicUI.playMusic(strs[1]);
-                }
-            }*/
-            log("New Message: " + contentValues.getAsString("content"));
+        if (!table.equals("message")) {
+            return null;
         }
+        if (contentValues.getAsInteger("isSend") == 0) {
+            if (isHanding) {
+                return null;
+            }
+            String content = contentValues.getAsString("content");
+            //if (content.contains("#切歌")) {
+            if (content.contains("给我")) {
+                try {
+                    isHanding = true;
+                    //String musicName=content.substring(content.indexOf("#切歌"));
+                    String musicName= "童话镇3";
+                    Http.put("name",musicName);
+                    Http.put("reply", "切歌成功：正在播放~~" + musicName);
+                    ShellUtils.execCommand("am instrument -w -r   -e debug false -e class com.cosage.zzh.wxmusic.ExampleInstrumentedTest#useAppContext com.cosage.zzh.wxmusic.test/android.support.test.runner.AndroidJUnitRunner", true);                } catch (Exception e) {
+                    XposedBridge.log("error:" + e.getMessage());
+                }
+            }
+                 /*String content = contentValues.getAsString("content");
+                 if(content.contains("#点歌") && !isPlayMusic){
+                     String[] strs = content.split("#点歌");
+                     if(strs.length>=2){
+                         isPlayMusic = true;
+                         yunMusicUI.playMusic(strs[1]);
+                     }
+                 }*/
+            log("New Message: " + contentValues.getAsString("content"));
+        } else {
+            isHanding = false;
+        }
+
         return null;
     }
 

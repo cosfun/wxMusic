@@ -9,7 +9,7 @@ import android.support.test.uiautomator.UiSelector;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.robv.android.xposed.XposedBridge;
+
 
 /**
  * Created by Zhengzhihui on 2018/5/29.
@@ -18,17 +18,27 @@ import de.robv.android.xposed.XposedBridge;
 public class WxTest {
     @Test
     public void useAppContext() throws Exception {
-        System.out.println("hh");
-        XposedBridge.log("test xposed");
 
-
-
-        /*UiDevice uiDevice;
+        UiDevice uiDevice;
         uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         UiObject inputText = uiDevice.findObject(new UiSelector().resourceId("com.tencent.mm:id/aaa"));
-        inputText.setText("测试内容1");
+        //inputText.setText(Http.get("reply"));
 
+        Thread.sleep(1500);
+        //UiObject sendButton = uiDevice.findObject(new UiSelector().resourceId("com.tencent.mm:id/aag"));
         UiObject sendButton = uiDevice.findObject(new UiSelector().resourceId("com.tencent.mm:id/aag"));
-        sendButton.click();*/
+        if(sendButton.exists()) {
+            sendButton.click();
+        }else{
+            sendButton =uiDevice.findObject(new UiSelector().resourceId("com.tencent.mm:id/aad"));
+            if(sendButton.exists()){
+                sendButton.click();
+            }else{
+                sendButton =uiDevice.findObject(new UiSelector().text("发送"));
+                if(sendButton.exists()) {
+                    sendButton.click();
+                }
+            }
+        }
     }
 }
