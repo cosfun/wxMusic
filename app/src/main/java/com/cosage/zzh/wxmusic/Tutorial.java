@@ -34,7 +34,7 @@ public class Tutorial implements IXposedHookLoadPackage {
 
     static {
         // TODO: Add the package name of application your want to hook!
-        hostAppPackages.add(WeChatMessage.pageName);
+        hostAppPackages.add(WeChatMessage.INSTANCE.getPageName());
     }
 
     /**

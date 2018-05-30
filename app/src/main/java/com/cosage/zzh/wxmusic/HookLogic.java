@@ -27,7 +27,7 @@ public class HookLogic implements IXposedHookLoadPackage {
                 if (SpellBook.INSTANCE.isImportantWechatProcess(loadPackageParam)) {
 
                     SpellBook.INSTANCE.startup(loadPackageParam, new ArrayList() {{
-                        add(WeChatMessage.instance());
+                        add(WeChatMessage.INSTANCE);
                     }});
 
                 }

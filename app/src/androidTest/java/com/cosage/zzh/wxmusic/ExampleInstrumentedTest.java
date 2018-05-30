@@ -11,9 +11,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.Response;
 
 
@@ -26,35 +29,23 @@ import okhttp3.Response;
 public class ExampleInstrumentedTest {
     @Test
     public void useAppContext() throws Exception {
-        //先关闭APP
-        Http.get("a", new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.i("test", "shibai");
-            }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Log.i("test", "chenggong");
-                Log.i("test", "test");
-            }
-        });
-
+        new UiTest().getInfo();
 
         // Context of the app under test.
-        /*UiDevice uiDevice;
+         UiDevice uiDevice;
         uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 
         uiDevice.pressHome();
         UiObject app=uiDevice.findObject(new UiSelector().text("网易云音乐"));
         app.click();
 
-        try {
+       /* try {
             Thread.sleep(3000);
         } catch (InterruptedException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
-        }
+        }*/
         //强制回到主界面
         int i=0;
         while (!uiDevice.findObject(new UiSelector().text("开启每日推荐")).exists()) {
@@ -62,13 +53,15 @@ public class ExampleInstrumentedTest {
             if(i==7){
                 break;
             }
-            uiDevice.executeShellCommand("input keyevent 4");
+            if(i%2==0) {
+                uiDevice.executeShellCommand("input keyevent 4");
+            }
             Thread.sleep(1500);
         }
-        *//*uiDevice.executeShellCommand("  input keyevent 4");
+        /*uiDevice.executeShellCommand("  input keyevent 4");
         uiDevice.executeShellCommand("  input keyevent 4");
         uiDevice.executeShellCommand("  input keyevent 4");
-        uiDevice.executeShellCommand("  input keyevent 4");*//*
+        uiDevice.executeShellCommand("  input keyevent 4");*/
 
         //UiObject search=uiDevice.findObject(new UiSelector().description("搜索"));
         //search.click();
@@ -78,7 +71,7 @@ public class ExampleInstrumentedTest {
         searchText.click();
 
        // Log.i("test", "get na:" + name);
-       // searchText.setText(name);
+        searchText.setText(UiTest.name);
         uiDevice.pressEnter();
 
         try {
@@ -92,13 +85,11 @@ public class ExampleInstrumentedTest {
         UiObject player = uiDevice.findObject(new UiSelector().resourceId("com.netease.cloudmusic:id/am9"));
         player.click();
 
+
         //点歌成功回调
-        uiDevice.pressHome();
-        UiObject wxApp=uiDevice.findObject(new UiSelector().text("微信"));
-        wxApp.click();
 
         //执行WX脚本
-        new WxTest().useAppContext();*/
+        new WxTest().useAppContext();
     }
 
 
