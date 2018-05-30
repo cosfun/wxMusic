@@ -1,26 +1,29 @@
 package com.cosage.zzh.wxmusic
 
 import android.content.ContentValues
-import android.support.test.uiautomator.UiObjectNotFoundException
-import android.widget.BaseAdapter
+import com.alibaba.fastjson.JSON
+
 
 import com.gh0u1l5.wechatmagician.spellbook.base.Operation
 import com.gh0u1l5.wechatmagician.spellbook.hookers.ListViewHider
 import com.gh0u1l5.wechatmagician.spellbook.interfaces.IAdapterHook
 import com.gh0u1l5.wechatmagician.spellbook.interfaces.IDatabaseHook
+import com.gh0u1l5.wechatmagician.spellbook.interfaces.IMessageStorageHook
 
-import java.io.IOException
+
 
 import de.robv.android.xposed.XposedBridge
 
 import de.robv.android.xposed.XposedBridge.log
+import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.XposedHelpers.getObjectField
+import org.json.JSONObject
 
 /**
  * Created by Zhengzhihui on 2018/5/28.
  */
 
-object WeChatMessage : IDatabaseHook,IAdapterHook {
+object WeChatMessage : IDatabaseHook,IAdapterHook,IMessageStorageHook {
 
     @Volatile
     var isHanding = false
@@ -72,7 +75,7 @@ object WeChatMessage : IDatabaseHook,IAdapterHook {
         return super.onDatabaseInserted(thisObject, table, nullColumnHack, initialValues, conflictAlgorithm, result)
     }
 
-    override fun onConversationAdapterCreated(adapter: BaseAdapter) {
+   /* override fun onConversationAdapterCreated(adapter: BaseAdapter) {
 
         ListViewHider.register(adapter, "Chatroom Hider") { item ->
             val username = getObjectField(item, "field_username")
@@ -80,11 +83,17 @@ object WeChatMessage : IDatabaseHook,IAdapterHook {
             false
             //username in ChatroomHideList
         }
+    }*/
+
+    override fun onMessageStorageInserted(msgId: Long, msgObject: Any) {
+
+        val field_talker = XposedHelpers.getObjectField(msgObject, "field_talker") as String?
+        XposedBridge.log("messge xposed:"+msgObject.toString())
+
+        XposedBridge.log("messge xposed J:"+JSON.toJSONString(msgObject))
+        super.onMessageStorageInserted(msgId, msgObject)
     }
 
 
-    override fun onDatabaseQueried(thisObject: Any, factory: Any?, sql: String, selectionArgs: Array<String>?, editTable: String?, cancellationSignal: Any?, result: Any?): Operation<Any> {
-        XposedBridge.log("q:"+editTable)
-        return super.onDatabaseQueried(thisObject, factory, sql, selectionArgs, editTable, cancellationSignal, result)
-    }
+
 }
